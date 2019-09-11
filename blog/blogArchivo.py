@@ -1,20 +1,3 @@
-'''
-Blog de notas de Julia
----------------------
-v1.0
-=======================
-Ejercicio que puntúa hasta 3 puntos para el examen final del módulo
-Sin internet
-Sólo evernote
-No hay slack
-Para terminal
-Pensar bien las  opciones que tendra el blog de notas
-Diagramacion wwww.lucidchart.com (diagrama de flujo)
-En el entorno virtual de 3.7.4
-git local
-al finalizar el ejercicio a las 16:15 enviar enlace por github
-'''
-
 import os
 
 import csv
@@ -24,8 +7,8 @@ import csv
 
 
 class Nota:
-    def __init__(self, id_nota, nota):
-        self.id_nota = id_nota
+    def __init__(self, nota):
+
         self.nota = nota
 
 
@@ -35,9 +18,10 @@ class Bloc:
 
     # METODOS
 
-    def nueva(self, id_nota, nota):
-        entrada = Nota(id_nota, nota)
+    def nueva(self, nota):
+        entrada = Nota(nota)
         self.bloc.append(entrada)
+        self._guardar()
 
         print('''
             >>>
@@ -54,7 +38,6 @@ class Bloc:
                 self._mostrar(i)  # privada
             return True
 
-
     def _mostrar(self, i):
         print('*************************')
         print('*************************')
@@ -63,20 +46,38 @@ class Bloc:
         print('Nota:{} '.format(i.nota))
 
     def borrar(self, id_nota):
-            for i in self.bloc:
-                if id_nota == i.id_nota:
-                    self.bloc.remove(i)
-                    print('''
+        for i in self.bloc:
+            if id_nota == i.id_nota:
+                self.bloc.remove(i)
+                print('''
                 >>>
                 \tNota borrada correctamente
                 <<<
                 ''')
 
+    def _guardar(self):
+        with open('blog.txt', 'w') as f:
+            writer = csv.writer(f)
+            # Nombre que le damos a las columnas
+            # writer.writerow('nota')
+
+            # # escribir contacto por filas
+            for contact in self.blog:
+                writer.writerow(contact.nota)
 
 
 def run():
     os.system('clear')
     bloc_de_Julia = Bloc()
+
+
+    # with open('file.txt', 'r') as f:
+#     for linea in f:
+#         print(linea)
+
+    with open('blog.txt', 'r') as f:
+        for linea in f:
+            print(linea)
 
     while True:
         principal = input('''
@@ -99,9 +100,9 @@ def run():
                 ''')
 
                 if menu == 'a':
-                    id_nota = int(input('Introduce un número identificador único para la nota '))
                     nota = input('Introduce tu nota ')
-                    bloc_de_Julia.nueva(id_nota, nota)
+                    bloc_de_Julia.nueva(nota)
+                    
 
                 elif menu == 'v':
                     notas = bloc_de_Julia.mostrar_todo()
@@ -114,10 +115,11 @@ def run():
                         ''')
 
                         if submenu == "b":
-                            id_nota = int(input('Introduce el identificador de la nota a borrar '))
+                            id_nota = int(
+                                input('Introduce el identificador de la nota a borrar '))
                             bloc_de_Julia.borrar(id_nota)
 
-                            #Vuelvo a mostrar las notas si es que hay alguna
+                            # Vuelvo a mostrar las notas si es que hay alguna
                             notas = bloc_de_Julia.mostrar_todo()
 
                         elif submenu == "s":
@@ -129,11 +131,12 @@ def run():
                     break
                 else:
                     print('Error! vuelve a probar')
-                
+
         elif principal == 's':
-            break 
+            break
         else:
             print('Error! Vuelve a probar')
+
 
 if __name__ == "__main__":
     run()
